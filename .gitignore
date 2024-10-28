@@ -1,0 +1,35 @@
+# Root-level ignore patterns
+node_modules/
+*.log
+.env
+.DS_Store
+
+# Client (React) folder
+client/node_modules/
+client/build/
+client/dist/
+client/.env
+client/.DS_Store
+client/.cache/
+client/*.log
+client/public/*.js.map
+
+# Server (Node.js) folder
+server/node_modules/
+server/processed/
+server/uploads/
+server/.env
+server/*.log
+server/.DS_Store
+
+# Editor and OS generated files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+Thumbs.db
+.project
+
+# Optional npm cache directory
+.npm/
+.pnpm-debug.log*
