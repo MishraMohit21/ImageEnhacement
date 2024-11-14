@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import cv2
 import numpy as np
 from skimage import exposure
@@ -50,17 +52,21 @@ def chromosomeSelection(fitness_cf, population):
     idx = np.searchsorted(fitness_cf, dice)
     return population[idx]
 
-def generation_fitness(population, image):
+def generation_fitness(population, image, psnr_cache):
     fitness = np.zeros(len(population))
     mse_array = []
     for i, chromosome in enumerate(population):
-        m, n = decode_chromosome(chromosome)
-        grid = (max(m, 2), max(n, 2))
-        processed_img = apply_clahe(image, grid=grid)
-        psnr, mse = evaluate_fitness(image, processed_img)
-        fitness[i] = psnr
+        if tuple(chromosome.tolist()) in psnr_cache:
+            fitness[i], mse = psnr_cache[tuple(chromosome.tolist())]
+        else:
+            m, n = decode_chromosome(chromosome)
+            grid = (max(m, 2), max(n, 2))
+            processed_img = apply_clahe(image, grid=grid)
+            psnr, mse = evaluate_fitness(image, processed_img)
+            fitness[i] = psnr
+            psnr_cache[tuple(chromosome.tolist())] = (psnr, mse)
         mse_array.append(mse)
-    return fitness, mse_array
+    return fitness, mse_array, psnr_cache
 
 def Crossover(parent1, parent2):
     point = random.randint(1, len(parent1) - 1)
@@ -82,14 +88,14 @@ def Algorithm(image, population_size, generations):
     max_n = image.shape[1] // 4
     chromosome_length = len(bin(max(max_m, max_n))[2:]) * 2
     population = generate_population(chromosome_length, population_size)
+    psnr_cache = {}
 
     for gen in range(generations):
-        # Report progress
         progress = int((gen / generations) * 100)
         print(f"PROGRESS:{progress}")
         sys.stdout.flush()
 
-        fitness_val, mse_array = generation_fitness(population, image)
+        fitness_val, mse_array, psnr_cache = generation_fitness(population, image, psnr_cache)
         sorted_idx = np.argsort(fitness_val)
         population = population[sorted_idx]
         fitness_val = fitness_val[sorted_idx]
@@ -100,19 +106,18 @@ def Algorithm(image, population_size, generations):
         NewGeneration(population, child1, child2)
         Mutation(population)
 
-    # Final progress update
     print("PROGRESS:100")
     sys.stdout.flush()
 
-    return apply_latest_clahe(image, population, population_size, max_m, max_n)
+    return apply_latest_clahe(image, population, population_size, max_m, max_n, psnr_cache)
 
-def apply_latest_clahe(image, population, population_size, max_m, max_n):
+def apply_latest_clahe(image, population, population_size, max_m, max_n, psnr_cache):
     latest_chromosome = population[-1]
     m, n = decode_chromosome(latest_chromosome)
     grid = (max(min(m, max_m), 2), max(min(n, max_n), 2))
     image = apply_clahe(image, grid=grid)
 
-    cv2.imwrite("./proce_image.png", image)
+    cv2.imwrite("./processed_image.png", image)
     return image
 
 if __name__ == "__main__":
@@ -133,8 +138,7 @@ if __name__ == "__main__":
             
         result_img = Algorithm(image, population_size, generations)
         
-        # Convert from RGB to BGR for saving
-        # result_img = cv2.cvtColor((result_img * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
+        
         cv2.imwrite(output_path, result_img)
         
     except Exception as e:

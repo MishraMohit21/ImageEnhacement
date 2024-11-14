@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #eaeef2; /* Soft gray background */
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.landing-page {
+  text-align: center;
+  padding: 50px 30px; /* Padding for content */
+  max-width: 600px; /* Limit width for readability */
+  width: 100%; /* Full width for smaller screens */
+  background: none; /* No background color */
+  box-shadow: none; /* No shadow */
+  animation: fadeIn 1s ease-in-out; /* Fade-in animation */
+}
+
+h1 {
+  font-size: 2.25rem; /* Larger heading */
+  margin-bottom: 20px; /* Space below heading */
+  color: #007bff; /* Professional blue for the heading */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: show; /* Hide overflow for animation */
+  animation: slideIn 1s forwards; /* Slide-in animation */
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(-5%);
+  }
+}
+
+p {
+  font-size: 1.1rem; /* Moderate size for paragraph */
+  margin-bottom: 30px; /* Space below paragraph */
+  line-height: 1.5; /* Improved line height for readability */
+  color: #666; /* Gray for paragraph text */
+}
+
+.button {
+  background-color: #007bff; /* Blue background for the button */
+  color: white; /* White text for the button */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 15px 30px; /* Padding for the button */
+  font-size: 1rem; /* Font size for button text */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s, transform 0.3s; /* Transition effects */
+  animation: buttonFadeIn 1s ease-in-out 0.5s forwards; /* Fade-in animation for button */
+}
+
+@keyframes buttonFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem; /* Smaller heading for mobile */
+  }
+
+  p {
+    font-size: 1rem; /* Smaller paragraph text for mobile */
+  }
+
+  .button {
+    padding: 12px 20px; /* Smaller button padding for mobile */
+  }
+}
